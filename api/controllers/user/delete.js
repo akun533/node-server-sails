@@ -27,15 +27,26 @@ module.exports = {
   fn: async function (inputs, exits) {
 
     try {
-      // 删除用户
-      const deletedUser = await User.destroyOne({ id: inputs.id });
+      // 查找用户
+      const user = await User.findOne({ id: inputs.id });
 
-      if (!deletedUser) {
+      if (!user) {
         return exits.success({
           success: false,
           message: '用户不存在或已被删除'
         });
       }
+
+      // 禁止删除 admin 账号
+      if (user.username === 'admin') {
+        return exits.success({
+          success: false,
+          message: '禁止删除管理员账号'
+        });
+      }
+
+      // 删除用户
+      await User.destroyOne({ id: inputs.id });
 
       return exits.success({
         success: true,

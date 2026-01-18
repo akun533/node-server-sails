@@ -255,6 +255,12 @@ const handleSave = async () => {
 
 // 删除用户
 const handleDelete = async (row: User) => {
+  // 禁止删除 admin 账号
+  if (row.username === "admin") {
+    ElMessage.warning("禁止删除管理员账号");
+    return;
+  }
+
   try {
     await ElMessageBox.confirm("确定要删除该用户吗？", "提示", {
       confirmButtonText: "确定",
@@ -409,7 +415,12 @@ onMounted(() => {
             <el-button link type="primary" @click="handleEdit(row)">
               编辑
             </el-button>
-            <el-button link type="danger" @click="handleDelete(row)">
+            <el-button
+              link
+              type="danger"
+              :disabled="row.username === 'admin'"
+              @click="handleDelete(row)"
+            >
               删除
             </el-button>
           </template>

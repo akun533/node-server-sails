@@ -68,6 +68,15 @@ module.exports = {
   fn: async function (inputs, exits) {
 
     try {
+      // 检查用户名是否已存在
+      const existingUser = await User.findOne({ username: inputs.username });
+      if (existingUser) {
+        return exits.success({
+          success: false,
+          message: '用户名已存在，请使用其他用户名'
+        });
+      }
+
       // 解密前端传来的密码
       const decryptedPassword = await sails.helpers.crypto.with({ action: 'decrypt', text: inputs.password });
       

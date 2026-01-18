@@ -79,6 +79,17 @@ module.exports = {
         });
       }
 
+      // 如果修改了用户名，检查新用户名是否已被其他用户使用
+      if (inputs.username && inputs.username !== existingUser.username) {
+        const duplicateUser = await User.findOne({ username: inputs.username });
+        if (duplicateUser) {
+          return exits.success({
+            success: false,
+            message: '用户名已存在，请使用其他用户名'
+          });
+        }
+      }
+
       // 构建更新数据
       const updateData = {};
       if (inputs.username) updateData.username = inputs.username;
