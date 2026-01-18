@@ -20,6 +20,10 @@ module.exports.routes = {
 
   '/': { view: 'pages/homepage' },
 
+  // 用户认证接口
+  'POST /login': 'auth/login',
+  'POST /refresh-token': 'auth/login', // 暂时复用登录接口
+
 
   /***************************************************************************
   *                                                                          *
@@ -31,6 +35,16 @@ module.exports.routes = {
   * 则会与静态资源匹配。                                                     *
   *                                                                          *
   ***************************************************************************/
+
+  // 数据库连接测试接口
+  'GET /api/database/test': 'database/test-connection',
+
+  // 用户管理接口
+  'GET /api/users': 'user/list',
+  'GET /api/users/:id': 'user/detail',
+  'POST /api/users': 'user/create',
+  'PUT /api/users/:id': 'user/update',
+  'DELETE /api/users/:id': 'user/delete',
 
 
 };

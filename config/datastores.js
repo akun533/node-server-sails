@@ -20,13 +20,8 @@ module.exports.datastores = {
   *                                                                          *
   * 您的应用程序的默认数据存储。                                              *
   *                                                                          *
-  * Sails 应用默认使用名为 `sails-disk` 的内置数据库适配器读写本地磁盘。      *
-  * 此功能纯粹是为了开发期间的便利；因为 `sails-disk` 并非为生产环境设计。   *
-  *                                                                          *
-  * 要在开发中使用不同的数据库，请按照以下说明操作。                          *
-  * 否则，只需保留默认数据存储不变，不使用 `adapter`。                      *
-  *                                                                          *
-  * (有关生产配置，请参见 `config/env/production.js`.)                       *
+  * 使用 PostgreSQL 数据库                                                   *
+  * 配置信息从 .env 文件中读取                                                *
   *                                                                          *
   ***************************************************************************/
 
@@ -34,20 +29,18 @@ module.exports.datastores = {
 
     /***************************************************************************
     *                                                                          *
-    * 想在开发过程中使用不同的数据库？                                          *
+    * PostgreSQL 数据库配置                                                    *
     *                                                                          *
-    * 1. 选择一个适配器:                                                        *
-    *    https://sailsjs.com/plugins/databases                                 *
-    *                                                                          *
-    * 2. 将其作为 Sails 应用的依赖项安装。                                      *
-    *    (例如:  npm install sails-mysql --save)                               *
-    *                                                                          *
-    * 3. 然后传入该适配器，同时提供连接 URL。                                  *
-    *    (有关帮助，请参见 https://sailsjs.com/config/datastores.)             *
+    * 使用 sails-postgresql 适配器连接 PostgreSQL 数据库                       *
+    * 连接参数从环境变量中读取                                                  *
     *                                                                          *
     ***************************************************************************/
-    // adapter: 'sails-mysql',
-    // url: 'mysql://user:password@host:port/database',
+    adapter: 'sails-postgresql',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT) || 5432,
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'sails',
 
   },
 

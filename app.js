@@ -20,8 +20,10 @@
  *   https://sailsjs.com/anatomy/app.js
  */
 
+// 加载环境变量
+require('dotenv').config();
 
-// 确保我们在项目目录中，这样无论我们实际从哪里启动，cwd-相对路径都会按预期工作。
+// 确保我们在项目目录中,这样无论我们实际从哪里启动,cwd-相对路径都会按预期工作。
 // > 注意: 启动时不需要此操作，但这是一种便捷的默认设置。
 process.chdir(__dirname);
 
