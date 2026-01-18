@@ -22,7 +22,7 @@ module.exports.routes = {
 
   // 用户认证接口
   'POST /login': 'auth/login',
-  'POST /refresh-token': 'auth/login', // 暂时复用登录接口
+  'POST /refresh-token': 'auth/refresh-token',
 
 
   /***************************************************************************

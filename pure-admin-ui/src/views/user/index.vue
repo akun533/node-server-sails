@@ -3,6 +3,13 @@ import { ref, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { User } from "@element-plus/icons-vue";
 import { encryptPassword } from "@/utils/crypto";
+import {
+  getUserList as getUserListApi,
+  getUserDetail,
+  createUser,
+  updateUser,
+  deleteUser
+} from "@/api/user";
 
 defineOptions({
   name: "UserManagement"
@@ -147,8 +154,7 @@ const getUserList = async () => {
       params.status = searchForm.value.status;
     }
 
-    const response = await fetch(`/api/users?${new URLSearchParams(params)}`);
-    const result = await response.json();
+    const result = await getUserListApi(params);
 
     if (result.success) {
       tableData.value = result.data.list;
@@ -212,11 +218,6 @@ const handleEdit = (row: User) => {
 // 保存用户
 const handleSave = async () => {
   try {
-    const url = dialogForm.value.id
-      ? `/api/users/${dialogForm.value.id}`
-      : "/api/users";
-    const method = dialogForm.value.id ? "PUT" : "POST";
-
     // 构建请求数据，如果有密码则加密
     const requestData = { ...dialogForm.value };
 
@@ -230,15 +231,14 @@ const handleSave = async () => {
       requestData.password = encryptPassword(requestData.password);
     }
 
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestData)
-    });
-
-    const result = await response.json();
+    let result;
+    if (dialogForm.value.id) {
+      // 更新用户
+      result = await updateUser(dialogForm.value.id, requestData);
+    } else {
+      // 创建用户
+      result = await createUser(requestData);
+    }
 
     if (result.success) {
       ElMessage.success(result.message || "操作成功");
@@ -262,11 +262,7 @@ const handleDelete = async (row: User) => {
       type: "warning"
     });
 
-    const response = await fetch(`/api/users/${row.id}`, {
-      method: "DELETE"
-    });
-
-    const result = await response.json();
+    const result = await deleteUser(row.id);
 
     if (result.success) {
       ElMessage.success(result.message || "删除成功");
@@ -427,7 +423,7 @@ onMounted(() => {
         :page-sizes="[10, 20, 50, 100]"
         :total="total"
         layout="total, sizes, prev, pager, next, jumper"
-        style=" justify-content: flex-end;margin-top: 20px"
+        style="justify-content: flex-end; margin-top: 20px"
         @current-change="handlePageChange"
         @size-change="handleSizeChange"
       />

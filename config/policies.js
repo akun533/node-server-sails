@@ -19,4 +19,14 @@ module.exports.policies = {
 
   // '*': true,
 
+  // 登录和刷新token不需要认证
+  'auth/login': true,
+  'auth/refresh-token': true,
+
+  // 数据库测试接口不需要认证（仅供测试使用）
+  'database/test-connection': true,
+
+  // 用户管理相关接口需要认证
+  'user/*': 'isAuthenticated'
+
 };

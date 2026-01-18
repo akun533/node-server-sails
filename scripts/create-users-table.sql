@@ -48,11 +48,13 @@ COMMENT ON COLUMN users.remark IS '备注信息';
 COMMENT ON COLUMN users.created_at IS '创建时间戳';
 COMMENT ON COLUMN users.updated_at IS '更新时间戳';
 
--- 插入测试数据
+-- 插入测试数据（密码已加密）
+-- admin 密码: admin123
+-- test 密码: test123
 INSERT INTO users (username, email, password, real_name, phone, gender, role, status, created_at, updated_at) 
 VALUES 
-    ('admin', 'admin@example.com', 'admin123', '管理员', '13800138000', 1, 'admin', 1, EXTRACT(EPOCH FROM NOW()) * 1000, EXTRACT(EPOCH FROM NOW()) * 1000),
-    ('test', 'test@example.com', 'test123', '测试租户', '13800138001', 2, 'tenant', 1, EXTRACT(EPOCH FROM NOW()) * 1000, EXTRACT(EPOCH FROM NOW()) * 1000);
+    ('admin', 'admin@example.com', 'MREfDC9VX1o=', '管理员', '13800138000', 1, 'admin', 1, EXTRACT(EPOCH FROM NOW()) * 1000, EXTRACT(EPOCH FROM NOW()) * 1000),
+    ('test', 'test@example.com', 'JBABEXBWXg==', '测试租户', '13800138001', 2, 'tenant', 1, EXTRACT(EPOCH FROM NOW()) * 1000, EXTRACT(EPOCH FROM NOW()) * 1000);
 
 -- 查询验证
 SELECT * FROM users;

@@ -19,4 +19,7 @@ module.exports.custom = {
   // stripeSecret: 'sk_test_Zzd814nldl91104qor5911gjald',
   // …
 
+  // JWT 密钥配置（生产环境应使用环境变量 JWT_SECRET）
+  jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+
 };

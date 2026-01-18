@@ -71,11 +71,14 @@ module.exports = {
       // 解密密码
       const decryptedPassword = await sails.helpers.crypto.with({ action: 'decrypt', text: inputs.password });
       
+      // 重新加密密码，存储到数据库
+      const encryptedPassword = await sails.helpers.crypto.with({ action: 'encrypt', text: decryptedPassword });
+      
       // 创建用户
       const newUser = await User.create({
         username: inputs.username,
         email: inputs.email,
-        password: decryptedPassword, // 存储明文密码（实际项目中应该使用bcrypt加密）
+        password: encryptedPassword, // 存储加密后的密码
         realName: inputs.realName,
         phone: inputs.phone,
         gender: inputs.gender || 0,

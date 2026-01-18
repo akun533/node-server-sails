@@ -84,8 +84,10 @@ module.exports = {
       if (inputs.username) updateData.username = inputs.username;
       if (inputs.email) updateData.email = inputs.email;
       if (inputs.password) {
-        // 解密密码
-        updateData.password = await sails.helpers.crypto.with({ action: 'decrypt', text: inputs.password });
+        // 解密前端传来的密码
+        const decryptedPassword = await sails.helpers.crypto.with({ action: 'decrypt', text: inputs.password });
+        // 重新加密密码，存储到数据库
+        updateData.password = await sails.helpers.crypto.with({ action: 'encrypt', text: decryptedPassword });
       }
       if (inputs.realName !== undefined) updateData.realName = inputs.realName;
       if (inputs.phone !== undefined) updateData.phone = inputs.phone;

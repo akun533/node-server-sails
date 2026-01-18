@@ -30,6 +30,17 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       host: "0.0.0.0",
       // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
       proxy: {
+        // 代理登录和刷新token接口
+        "/login": {
+          target: VITE_API_BASE_URL || "http://localhost:1337",
+          changeOrigin: true,
+          ws: true
+        },
+        "/refresh-token": {
+          target: VITE_API_BASE_URL || "http://localhost:1337",
+          changeOrigin: true,
+          ws: true
+        },
         // 代理所有 /api 开头的请求到后端服务器
         "/api": {
           target: VITE_API_BASE_URL || "http://localhost:1337",

@@ -38,7 +38,7 @@ const { title } = useNav();
 
 const ruleForm = reactive({
   username: "admin",
-  password: "admin123"
+  password: ""
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -64,8 +64,14 @@ const onLogin = async (formEl: FormInstance | undefined) => {
                 .finally(() => (disabled.value = false));
             });
           } else {
-            message("登录失败", { type: "error" });
+            // 显示具体的错误信息
+            message(res.message || "登录失败", { type: "error" });
           }
+        })
+        .catch(err => {
+          // 捕获网络错误或其他异常
+          message(err.message || "登录失败，请稍后重试", { type: "error" });
+          console.error("登录错误:", err);
         })
         .finally(() => (loading.value = false));
     }
@@ -134,6 +140,7 @@ useEventListener(document, "keydown", ({ code }) => {
                   clearable
                   placeholder="账号"
                   :prefix-icon="useRenderIcon(User)"
+                  autocomplete="username"
                 />
               </el-form-item>
             </Motion>
@@ -146,6 +153,7 @@ useEventListener(document, "keydown", ({ code }) => {
                   show-password
                   placeholder="密码"
                   :prefix-icon="useRenderIcon(Lock)"
+                  autocomplete="current-password"
                 />
               </el-form-item>
             </Motion>

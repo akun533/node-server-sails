@@ -1,6 +1,6 @@
 /**
  * 用户登录
- * 
+ *
  * @description :: 用户登录验证
  */
 
@@ -30,14 +30,13 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-
     try {
       // 解密密码
       const decryptedPassword = await sails.helpers.crypto.with({ action: 'decrypt', text: inputs.password });
-      
+
       // 查找用户
-      const user = await User.findOne({ 
-        username: inputs.username 
+      const user = await User.findOne({
+        username: inputs.username
       });
 
       if (!user) {
@@ -58,7 +57,7 @@ module.exports = {
       // 验证密码（这里假设数据库存储的是加密后的密码）
       // 需要先加密输入的密码，再与数据库中的密码比较
       const encryptedInputPassword = await sails.helpers.crypto.with({ action: 'encrypt', text: decryptedPassword });
-      
+
       if (user.password !== encryptedInputPassword) {
         return exits.success({
           success: false,
@@ -75,6 +74,30 @@ module.exports = {
       // 移除密码字段
       delete user.password;
 
+      // 生成 JWT token
+      const tokenPayload = {
+        id: user.id,
+        username: user.username,
+        role: user.role
+      };
+
+      // 生成 accessToken (24小时过期)
+      const accessToken = await sails.helpers.jwt.with({
+        action: 'sign',
+        payload: tokenPayload,
+        expiresIn: '24h'
+      });
+
+      // 生成 refreshToken (7天过期)
+      const refreshToken = await sails.helpers.jwt.with({
+        action: 'sign',
+        payload: { ...tokenPayload, type: 'refresh' },
+        expiresIn: '7d'
+      });
+
+      // 计算过期时间
+      const expiresTime = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
       // 返回成功，包含用户信息和token
       return exits.success({
         success: true,
@@ -85,9 +108,9 @@ module.exports = {
           nickname: user.realName || user.username,
           roles: [user.role],
           permissions: user.role === 'admin' ? ['*:*:*'] : ['user:*:*'],
-          accessToken: `token_${user.id}_${Date.now()}`,
-          refreshToken: `refresh_${user.id}_${Date.now()}`,
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24小时后过期
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          expires: expiresTime.toISOString()
         }
       });
 
