@@ -68,7 +68,7 @@ module.exports = {
   fn: async function (inputs, exits) {
 
     try {
-      // 解密密码
+      // 解密前端传来的密码
       const decryptedPassword = await sails.helpers.crypto.with({ action: 'decrypt', text: inputs.password });
       
       // 重新加密密码，存储到数据库
