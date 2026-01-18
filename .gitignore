@@ -134,3 +134,5 @@ lib-cov
 *.pid
 
 /node_modules
+
+.env
